@@ -22,3 +22,4 @@ esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 2) Importer esx_burgerjob.sql dans votre base de donnée
 3) Ajouter cette ligne dans votre server.cfg : start esx_burgerjob
 
+Pour pourvoir acheter vos produits pour les revendre , n'oubliez pas de les ajouter dans un magasin :)
