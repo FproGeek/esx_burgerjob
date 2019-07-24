@@ -18,8 +18,8 @@ INSERT INTO `jobs` (name, label, whitelisted) VALUES
 
 INSERT INTO `job_grades` (job_name, grade, name, label, salary, skin_male, skin_female) VALUES
   (@job_name, 0, 'recru', 'Recrue', 2500, '{}', '{}'),
-  (@job_name, 2, 'viceboss', 'Co-gérant', 3000, '{}', '{}'),
-  (@job_name, 3, 'boss', 'Gérant', 3500, '{}', '{}')
+  (@job_name, 2, 'viceboss', 'Co-gÃ©rant', 3000, '{}', '{}'),
+  (@job_name, 3, 'boss', 'GÃ©rant', 3500, '{}', '{}')
 ;
 
 INSERT INTO `items` (`name`, `label`, `limit`) VALUES  
@@ -30,5 +30,5 @@ INSERT INTO `items` (`name`, `label`, `limit`) VALUES
     ('icetea', 'Ice Tea', 20),
     ('energy', 'Energy Drink', 20),
     ('drpepper', 'Dr. Pepper', 20),
-    ('limonade', 'Limonade', 20),
+    ('limonade', 'Limonade', 20)
 ;
