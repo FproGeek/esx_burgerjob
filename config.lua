@@ -38,6 +38,13 @@ Config.Zones = {
     },
 
     Vaults = {
+        Pos   = { x = -1202.5881347656, y = -894.40582275391, z = 13.99516487126 },
+        Size  = { x = 1.5, y = 1.5, z = 1.0 },
+        Color = { r = 248, g = 248, b = 255 },
+        Type  = 1,
+    },
+
+    Fridge = {
         Pos   = { x = -1196.6790771484, y = -894.33947753906, z = 12.995160102844 },
         Size  = { x = 1.6, y = 1.6, z = 1.0 },
         Color = { r = 248, g = 248, b = 255 },
@@ -84,13 +91,29 @@ Config.Zones = {
         Color = { r = 0, g = 100, b = 0 },
         Type  = 1,
     },
+
+-----------------------
+-------- SHOPS --------
+
+    Flacons = {
+        Pos   = { x = -1179.884765625, y = -902.48187255859, z = 13.549982070922 },
+        Size  = { x = 1.6, y = 1.6, z = 1.0 },
+        Color = { r = 238, g = 0, b = 0 },
+        Type  = 1,
+        Items = {
+            { name = 'bread',      label = _U('bread'),   price = 1 },
+            { name = 'steak',      label = _U('steak'),   price = 3 },
+            { name = 'cheese',       label = _U('cheese'),    price = 2 }
+        },
+    },
+
 }
 
 -- CHECK SKINCHANGER CLIENT MAIN.LUA for matching elements
 
 Config.Uniforms = {
   burgershot_outfit = {
-    male = {
+   male = {
         ['tshirt_1'] = 63,  ['tshirt_2'] = 0,
         ['torso_1'] = 23,   ['torso_2'] = 3,
         ['decals_1'] = 3,   ['decals_2'] = 0,
@@ -99,7 +122,7 @@ Config.Uniforms = {
         ['shoes_1'] = 1,    ['shoes_2'] = 1,
         ['chain_1'] = 0,    ['chain_2'] = 0
     },
-    female = {
+    	female = {
         ['tshirt_1'] = 63,  ['tshirt_2'] = 0,
         ['torso_1'] = 23,   ['torso_2'] = 3,
         ['decals_1'] = 3,   ['decals_2'] = 0,
@@ -108,5 +131,5 @@ Config.Uniforms = {
         ['shoes_1'] = 1,   ['shoes_2'] = 1,
         ['chain_1'] = 0,  ['chain_2'] = 0
     }
-  },
   }
+}
