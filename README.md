@@ -1,12 +1,12 @@
 # esx_burgerjob
 Ce script permet d'avoir le job BurgerShot sur son serveur gta 5 RP (fivem).
 
-Le script contient déja l'intérieur du BurgerShot, merci de ne pas en mettre un nouveau.
-
-# Vidéo de présentation
-https://youtu.be/VReiHQ68fSk
+Merci de télecharger et d'installer ce mapping pour utiliser burgershot.
+https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem
 
 # Script Requiert
+Mapping burgershot => https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem  (merci a Smallo)
+
 esx_society => https://github.com/ESX-Org/esx_society
 
 esx_billing => https://github.com/ESX-Org/esx_billing
@@ -18,8 +18,10 @@ esx_basicneeds => https://github.com/ESX-Org/esx_basicneeds
 esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 
 # Installation
-1) Placer le dossier dans /[esx]
-2) Importer esx_burgerjob.sql dans votre base de donnée
-3) Ajouter cette ligne dans votre server.cfg : start esx_burgerjob
+1) Ajouter ce mapping sur votre serveur : https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem, oubliez pas de marquer le dossier dans server.cfg.
+2) Ouvrez l'archive "esx_burgershot 1.1.0"
+3) Placer le dossier "esx_burgershot" dans /[esx]
+4) Importer esx_burgersho.sql dans votre base de donnée
+5) Ajouter cette ligne dans votre server.cfg : start esx_burgerjob
 
-Pour pourvoir acheter vos produits pour les revendre , n'oubliez pas de les ajouter dans un magasin :)
+
