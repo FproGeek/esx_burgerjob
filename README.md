@@ -27,7 +27,7 @@ esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 # Manger l'hamburger
 Pour rendre possible le pouvoir de manger son hamburger, vous devez vous rendre dans esx_basicneeds puis dans /server/main.lua et ajouter : 
 
-ESX.RegisterUsableItem('burger', function(source)
+"ESX.RegisterUsableItem('burger', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('burger', 1)
@@ -35,6 +35,6 @@ ESX.RegisterUsableItem('burger', function(source)
 	TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
 	TriggerClientEvent('esx_basicneeds:onEat', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_burger'))
-end)
+end)"
 
 merci
