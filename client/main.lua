@@ -102,7 +102,7 @@ function setUniform(job, playerPed)
       else
         ESX.ShowNotification(_U('no_outfit'))
       end
-      if job ~= 'citizen_wear' and job ~= 'barman_outfit' then
+      if job ~= 'citizen_wear' and job ~= 'burgershot_outfit' then
         setClipset(playerPed, "MOVE_M@POSH@")
       end
     else
@@ -111,7 +111,7 @@ function setUniform(job, playerPed)
       else
         ESX.ShowNotification(_U('no_outfit'))
       end
-      if job ~= 'citizen_wear' and job ~= 'barman_outfit' then
+      if job ~= 'citizen_wear' and job ~= 'burgershot_outfit' then
         setClipset(playerPed, "MOVE_F@POSH@")
       end
     end
@@ -150,6 +150,7 @@ function OpenCloakroomMenu()
 
       if data.current.value == 'burgershot_outfit' then
         setUniform(data.current.value, playerPed)
+        isBarman = true
       end
 
       CurrentAction     = 'menu_cloakroom'
@@ -171,6 +172,8 @@ function OpenVaultMenu()
   if Config.EnableVaultManagement then
 
     local elements = {
+      {label = _U('get_weapon'), value = 'get_weapon'},
+      {label = _U('put_weapon'), value = 'put_weapon'},
       {label = _U('get_object'), value = 'get_stock'},
       {label = _U('put_object'), value = 'put_stock'}
     }
@@ -186,6 +189,14 @@ function OpenVaultMenu()
         elements = elements,
       },
       function(data, menu)
+
+        if data.current.value == 'get_weapon' then
+          OpenGetWeaponMenu()
+        end
+
+        if data.current.value == 'put_weapon' then
+          OpenPutWeaponMenu()
+        end
 
         if data.current.value == 'put_stock' then
            OpenPutStocksMenu()
@@ -208,6 +219,47 @@ function OpenVaultMenu()
     )
 
   end
+
+end
+
+function OpenFridgeMenu()
+
+    local elements = {
+      {label = _U('get_object'), value = 'get_stock'},
+      {label = _U('put_object'), value = 'put_stock'}
+    }
+    
+
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open(
+      'default', GetCurrentResourceName(), 'fridge',
+      {
+        title    = _U('fridge'),
+        align    = 'top-left',
+        elements = elements,
+      },
+      function(data, menu)
+
+        if data.current.value == 'put_stock' then
+           OpenPutFridgeStocksMenu()
+        end
+
+        if data.current.value == 'get_stock' then
+           OpenGetFridgeStocksMenu()
+        end
+
+      end,
+      
+      function(data, menu)
+
+        menu.close()
+
+        CurrentAction     = 'menu_fridge'
+        CurrentActionMsg  = _U('open_fridge')
+        CurrentActionData = {}
+      end
+    )
 
 end
 
@@ -350,11 +402,59 @@ function OpenSocietyActionsMenu()
   local elements = {}
 
   table.insert(elements, {label = _U('billing'),    value = 'billing'})
-  if (isBarman or IsGradeBoss()) then
+  if (isBarman or IsGradeBoss()) or PlayerData.job.grade_name == 'recruit' or PlayerData.job.grade_name == 'employer' then
     table.insert(elements, {label = _U('crafting'),    value = 'menu_crafting'})
   end
 
   ESX.UI.Menu.CloseAll()
+
+  ESX.UI.Menu.Open(
+    'default', GetCurrentResourceName(), 'burgershot_actions',
+    {
+      title    = _U('burgershot'),
+      align    = 'top-left',
+      elements = elements
+    },
+    function(data, menu)
+
+      if data.current.value == 'billing' then
+        OpenBillingMenu()
+      end
+
+      if data.current.value == 'menu_crafting' then
+        
+          ESX.UI.Menu.Open(
+              'default', GetCurrentResourceName(), 'menu_crafting',
+              {
+                  title = _U('crafting'),
+                  align = 'top-left',
+                  elements = {
+                      {label = _U('burger'),     value = 'burger'},
+                  }
+              },
+              function(data2, menu2)
+            
+                TriggerServerEvent('esx_burgershotjob:craftburger', data2.current.value)
+                animsAction({ lib = "mini@drinking", anim = "shots_barman_b" })
+      
+              end,
+              function(data2, menu2)
+                  menu2.close()
+              end
+          )
+      end
+     
+    end,
+    function(data, menu)
+
+      menu.close()
+
+    end
+  )
+
+end
+
+function OpenBillingMenu()
 
   ESX.UI.Menu.Open(
     'dialog', GetCurrentResourceName(), 'billing',
@@ -388,7 +488,7 @@ end
 
 function OpenGetStocksMenu()
 
-  ESX.TriggerServerCallback('esx_burgerjob:getStockItems', function(items)
+  ESX.TriggerServerCallback('esx_burgershotjob:getStockItems', function(items)
 
     print(json.encode(items))
 
@@ -424,7 +524,7 @@ function OpenGetStocksMenu()
               menu.close()
               OpenGetStocksMenu()
 
-              TriggerServerEvent('esx_burgerjob:getStockItem', itemName, count)
+              TriggerServerEvent('esx_burgershotjob:getStockItem', itemName, count)
             end
 
           end,
@@ -445,7 +545,7 @@ end
 
 function OpenPutStocksMenu()
 
-ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory)
+ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inventory)
 
     local elements = {}
 
@@ -485,7 +585,7 @@ ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory
               menu.close()
               OpenPutStocksMenu()
 
-              TriggerServerEvent('esx_burgerjob:putStockItems', itemName, count)
+              TriggerServerEvent('esx_burgershotjob:putStockItems', itemName, count)
             end
 
           end,
@@ -504,10 +604,127 @@ ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory
 
 end
 
---[[
+function OpenGetFridgeStocksMenu()
+
+  ESX.TriggerServerCallback('esx_burgershotjob:getFridgeStockItems', function(items)
+
+    print(json.encode(items))
+
+    local elements = {}
+
+    for i=1, #items, 1 do
+      table.insert(elements, {label = 'x' .. items[i].count .. ' ' .. items[i].label, value = items[i].name})
+    end
+
+    ESX.UI.Menu.Open(
+      'default', GetCurrentResourceName(), 'fridge_menu',
+      {
+        title    = _U('burgershot_fridge_stock'),
+        elements = elements
+      },
+      function(data, menu)
+
+        local itemName = data.current.value
+
+        ESX.UI.Menu.Open(
+          'dialog', GetCurrentResourceName(), 'fridge_menu_get_item_count',
+          {
+            title = _U('quantity')
+          },
+          function(data2, menu2)
+
+            local count = tonumber(data2.value)
+
+            if count == nil then
+              ESX.ShowNotification(_U('invalid_quantity'))
+            else
+              menu2.close()
+              menu.close()
+              OpenGetStocksMenu()
+
+              TriggerServerEvent('esx_burgershotjob:getFridgeStockItem', itemName, count)
+            end
+
+          end,
+          function(data2, menu2)
+            menu2.close()
+          end
+        )
+
+      end,
+      function(data, menu)
+        menu.close()
+      end
+    )
+
+  end)
+
+end
+
+function OpenPutFridgeStocksMenu()
+
+ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inventory)
+
+    local elements = {}
+
+    for i=1, #inventory.items, 1 do
+
+      local item = inventory.items[i]
+
+      if item.count > 0 then
+        table.insert(elements, {label = item.label .. ' x' .. item.count, type = 'item_standard', value = item.name})
+      end
+
+    end
+
+    ESX.UI.Menu.Open(
+      'default', GetCurrentResourceName(), 'fridge_menu',
+      {
+        title    = _U('fridge_inventory'),
+        elements = elements
+      },
+      function(data, menu)
+
+        local itemName = data.current.value
+
+        ESX.UI.Menu.Open(
+          'dialog', GetCurrentResourceName(), 'fridge_menu_put_item_count',
+          {
+            title = _U('quantity')
+          },
+          function(data2, menu2)
+
+            local count = tonumber(data2.value)
+
+            if count == nil then
+              ESX.ShowNotification(_U('invalid_quantity'))
+            else
+              menu2.close()
+              menu.close()
+              OpenPutFridgeStocksMenu()
+
+              TriggerServerEvent('esx_burgershotjob:putFridgeStockItems', itemName, count)
+            end
+
+          end,
+          function(data2, menu2)
+            menu2.close()
+          end
+        )
+
+      end,
+      function(data, menu)
+        menu.close()
+      end
+    )
+
+  end)
+
+end
+
 function OpenGetWeaponMenu()
 
-  ESX.TriggerServerCallback('esx_burgerjob:getVaultWeapons', function(weapons)
+  ESX.TriggerServerCallback('esx_burgershotjob:getVaultWeapons', function(weapons)
 
     local elements = {}
 
@@ -528,7 +745,7 @@ function OpenGetWeaponMenu()
 
         menu.close()
 
-        ESX.TriggerServerCallback('esx_burgerjob:removeVaultWeapon', function()
+        ESX.TriggerServerCallback('esx_burgershotjob:removeVaultWeapon', function()
           OpenGetWeaponMenu()
         end, data.current.value)
 
@@ -570,7 +787,7 @@ function OpenPutWeaponMenu()
 
       menu.close()
 
-      ESX.TriggerServerCallback('esx_burgerjob:addVaultWeapon', function()
+      ESX.TriggerServerCallback('esx_burgershotjob:addVaultWeapon', function()
         OpenPutWeaponMenu()
       end, data.current.value)
 
@@ -581,7 +798,40 @@ function OpenPutWeaponMenu()
   )
 
 end
-]]--
+
+function OpenShopMenu(zone)
+
+    local elements = {}
+    for i=1, #Config.Zones[zone].Items, 1 do
+
+        local item = Config.Zones[zone].Items[i]
+
+        table.insert(elements, {
+            label     = item.label .. ' - <span style="color:red;">$' .. item.price .. ' </span>',
+            realLabel = item.label,
+            value     = item.name,
+            price     = item.price
+        })
+
+    end
+
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open(
+        'default', GetCurrentResourceName(), 'burgershot_shop',
+        {
+            title    = _U('shop'),
+            elements = elements
+        },
+        function(data, menu)
+            TriggerServerEvent('esx_burgershotjob:buyItem', data.current.value, data.current.price, data.current.realLabel)
+        end,
+        function(data, menu)
+            menu.close()
+        end
+    )
+
+end
 
 function animsAction(animObj)
     Citizen.CreateThread(function()
@@ -622,7 +872,7 @@ function animsAction(animObj)
 end
 
 
-AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
+AddEventHandler('esx_burgershotjob:hasEnteredMarker', function(zone)
  
     if zone == 'BossActions' and IsGradeBoss() then
       CurrentAction     = 'menu_boss_actions'
@@ -642,6 +892,18 @@ AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
         CurrentActionMsg  = _U('open_vault')
         CurrentActionData = {}
       end
+    end
+
+    if zone == 'Fridge' then
+      CurrentAction     = 'menu_fridge'
+      CurrentActionMsg  = _U('open_fridge')
+      CurrentActionData = {}
+    end
+
+    if zone == 'Flacons' then
+      CurrentAction     = 'menu_shop'
+      CurrentActionMsg  = _U('shop_menu')
+      CurrentActionData = {zone = zone}
     end
     
     if zone == 'Vehicles' then
@@ -704,7 +966,7 @@ AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
 
 end)
 
-AddEventHandler('esx_burgerjob:hasExitedMarker', function(zone)
+AddEventHandler('esx_burgershotjob:hasExitedMarker', function(zone)
 
     CurrentAction = nil
     ESX.UI.Menu.CloseAll()
@@ -781,12 +1043,12 @@ Citizen.CreateThread(function()
             if (isInMarker and not HasAlreadyEnteredMarker) or (isInMarker and LastZone ~= currentZone) then
                 HasAlreadyEnteredMarker = true
                 LastZone                = currentZone
-                TriggerEvent('esx_burgerjob:hasEnteredMarker', currentZone)
+                TriggerEvent('esx_burgershotjob:hasEnteredMarker', currentZone)
             end
 
             if not isInMarker and HasAlreadyEnteredMarker then
                 HasAlreadyEnteredMarker = false
-                TriggerEvent('esx_burgerjob:hasExitedMarker', LastZone)
+                TriggerEvent('esx_burgershotjob:hasExitedMarker', LastZone)
             end
 
         end
@@ -816,6 +1078,14 @@ Citizen.CreateThread(function()
             OpenVaultMenu()
         end
 
+        if CurrentAction == 'menu_fridge' then
+            OpenFridgeMenu()
+        end
+
+        if CurrentAction == 'menu_shop' then
+            OpenShopMenu(CurrentActionData.zone)
+        end
+        
         if CurrentAction == 'menu_vehicle_spawner' then
             OpenVehicleSpawnerMenu()
         end
@@ -870,6 +1140,87 @@ Citizen.CreateThread(function()
 
     if IsControlJustReleased(0,  Keys['F6']) and IsJobTrue() and not ESX.UI.Menu.IsOpen('default', GetCurrentResourceName(), 'burgershot_actions') then
         OpenSocietyActionsMenu()
+    end
+
+
+  end
+end)
+
+
+-----------------------
+----- TELEPORTERS -----
+
+AddEventHandler('esx_burgershotjob:teleportMarkers', function(position)
+  SetEntityCoords(GetPlayerPed(-1), position.x, position.y, position.z)
+end)
+
+-- Show top left hint
+Citizen.CreateThread(function()
+  while true do
+    Wait(0)
+    if hintIsShowed == true then
+      SetTextComponentFormat("STRING")
+      AddTextComponentString(hintToDisplay)
+      DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+    end
+  end
+end)
+
+-- Display teleport markers
+Citizen.CreateThread(function()
+  while true do
+    Wait(0)
+
+    if IsJobTrue() then
+
+        local coords = GetEntityCoords(GetPlayerPed(-1))
+        for k,v in pairs(Config.TeleportZones) do
+          if(v.Marker ~= -1 and GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < Config.DrawDistance) then
+            DrawMarker(v.Marker, v.Pos.x, v.Pos.y, v.Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, v.Size.x, v.Size.y, v.Size.z, v.Color.r, v.Color.g, v.Color.b, 100, false, true, 2, false, false, false, false)
+          end
+        end
+
+    end
+
+  end
+end)
+
+-- Activate teleport marker
+Citizen.CreateThread(function()
+  while true do
+    Wait(0)
+    local coords      = GetEntityCoords(GetPlayerPed(-1))
+    local position    = nil
+    local zone        = nil
+
+    if IsJobTrue() then
+
+        for k,v in pairs(Config.TeleportZones) do
+          if(GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < v.Size.x) then
+            isInPublicMarker = true
+            position = v.Teleport
+            zone = v
+            break
+          else
+            isInPublicMarker  = false
+          end
+        end
+
+        if IsControlJustReleased(0, Keys["E"]) and isInPublicMarker then
+          TriggerEvent('esx_burgershotjob:teleportMarkers', position)
+        end
+
+        -- hide or show top left zone hints
+        if isInPublicMarker then
+          hintToDisplay = zone.Hint
+          hintIsShowed = true
+        else
+          if not isInMarker then
+            hintToDisplay = "no hint to display"
+            hintIsShowed = false
+          end
+        end
+
     end
 
   end
