@@ -2,7 +2,7 @@ Locales['fr'] = {
     -- Cloakroom
     ['cloakroom']                = 'Vestiaire',
     ['citizen_wear']             = 'Tenue civile',
-    ['burgershot_outfit']        = 'Tenue Burgershort',
+    ['burgershot_outfit']        = 'Tenue Burgershot',
     ['no_outfit']                = 'Il n\'y a pas d\'uniforme à votre taille...',
     ['open_cloackroom']          = 'Appuyez sur ~INPUT_CONTEXT~ pour vous changer',
 
@@ -13,8 +13,23 @@ Locales['fr'] = {
     ['put_weapon_menu']          = 'Coffre - Déposer Arme',
     ['get_object']               = 'Prendre Objet',
     ['put_object']               = 'Déposer Objet',
-    ['vault']                    = 'Frigo',
-    ['open_vault']               = 'Appuyez sur ~INPUT_CONTEXT~ pour accéder au frigo',
+    ['vault']                    = 'Coffre',
+    ['open_vault']               = 'Appuyez sur ~INPUT_CONTEXT~ pour accéder au coffre',
+
+    -- Fridge  
+    ['get_object']               = 'Prendre Objet',
+    ['put_object']               = 'Déposer Objet',
+    ['fridge']                   = 'Frigo',
+    ['open_fridge']              = 'Appuyez sur ~INPUT_CONTEXT~ pour accéder au frigo',
+    ['burgershot_fridge_stock']     = 'Frigo du BurgerShot',
+    ['fridge_inventory']         = 'Contenu du frigo',
+
+    -- Shops  
+    ['shop']                     = 'Boutique du burgershot',
+    ['shop_menu']                = 'Appuyez sur ~INPUT_CONTEXT~ pour accéder à la boutique.',
+    ['bought']                   = 'Vous avez acheté ~b~1x ',
+    ['not_enough_money']         = 'Vous n\'avez ~r~pas assez~s~ d\'argent.',
+    ['max_item']                 = 'Vous en portez déjà assez sur vous.',
 
     -- Vehicles  
     ['vehicle_menu']             = 'Véhicule',
@@ -36,7 +51,7 @@ Locales['fr'] = {
     ['you_added']                = 'Vous avez ajouté x',
     ['quantity']                 = 'Quantité',
     ['inventory']                = 'Inventaire',
-    ['burgershot_stock']            = 'Stock du burgershot',
+    ['burgershot_stock']            = 'Stock du BurgerShot',
 
     -- Billing Menu  
     ['billing']                  = 'Facture',
@@ -44,11 +59,23 @@ Locales['fr'] = {
     ['billing_amount']           = 'Montant de la facture',
     ['amount_invalid']           = 'Montant invalide',
 
+    -- Crafting Menu  
+    ['crafting']                 = 'Fabrication Hamburger',
+    ['burger']                  = 'Burger',
+    ['bread']                   = 'Pain',
+    ['steak']                 = 'Steak',
+    ['cheese']                = 'Fromage',
+    ['assembling_cocktail']      = 'Mélange des différents ingrédients en cours !',
+    ['craft_miss']               = 'Malheureux échec du mélange...',
+    ['not_enough']               = 'Pas assez de ~r~ ',
+    ['craft']                    = '~g~ est prêt',
+
     -- Misc  
-    ['map_blip']                 = 'Burgershot',
-    ['burgershot']                  = 'Burgershot',
+    ['map_blip']                 = 'BurgerShot',
+    ['burgershot']                  = 'BurgerShot',
 
     -- Phone  
-    ['burgershot_phone']            = 'burgershot',
-    ['burgershot_customer']         = 'Citoyen',    
+    ['burgershot_phone']            = 'BurgerShot',
+    ['burgershot_customer']         = 'Citoyen',
+    
 }
