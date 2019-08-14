@@ -36,3 +36,5 @@ ESX.RegisterUsableItem('burger', function(source)
 	TriggerClientEvent('esx_basicneeds:onEat', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_burger'))
 end)
+
+merci
