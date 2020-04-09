@@ -1,7 +1,7 @@
 # esx_burgerjob 1.2.0
 Ce script permet d'avoir le job BurgerShot sur son serveur gta 5 RP (fivem).
 
-ZONE DE BASE:
+### ZONE DE BASE:
 
 -Vestiaire
 
@@ -13,7 +13,7 @@ ZONE DE BASE:
 
 -Garage véhicule
 
-MENU F6:
+### MENU F6:
 
 -Menu Facture.
 
@@ -44,7 +44,7 @@ esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 # Manger l'hamburger, les frites et les boissons.
 Pour rendre possible le pouvoir de manger son hamburger et ses frites ainsi que boire le soda etc.. , vous devez vous rendre dans esx_basicneeds puis dans /server/main.lua et ajouter : 
 
-"ESX.RegisterUsableItem('burger', function(source)
+    ESX.RegisterUsableItem('burger', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('burger', 1)
@@ -52,9 +52,9 @@ Pour rendre possible le pouvoir de manger son hamburger et ses frites ainsi que 
 	TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
 	TriggerClientEvent('esx_basicneeds:onEat', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_burger'))
-end)
+    end)
 
-ESX.RegisterUsableItem('frites', function(source)
+    ESX.RegisterUsableItem('frites', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('frites', 1)
@@ -62,9 +62,9 @@ ESX.RegisterUsableItem('frites', function(source)
 	TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
 	TriggerClientEvent('esx_basicneeds:onEat', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_frites'))
-end)
+    end)
 
-ESX.RegisterUsableItem('soda', function(source)
+    ESX.RegisterUsableItem('soda', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('soda', 1)
@@ -72,9 +72,9 @@ ESX.RegisterUsableItem('soda', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_soda'))
-end)
+    end)
 
-ESX.RegisterUsableItem('icetea', function(source)
+    ESX.RegisterUsableItem('icetea', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('icetea', 1)
@@ -82,9 +82,9 @@ ESX.RegisterUsableItem('icetea', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_icetea'))
-end)
+    end)
 
-ESX.RegisterUsableItem('jusfruit', function(source)
+    ESX.RegisterUsableItem('jusfruit', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('jusfruit', 1)
@@ -92,9 +92,9 @@ ESX.RegisterUsableItem('jusfruit', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_jusfruit'))
-end)
+    end)
 
-ESX.RegisterUsableItem('limonade', function(source)
+    ESX.RegisterUsableItem('limonade', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('limonade', 1)
@@ -102,9 +102,9 @@ ESX.RegisterUsableItem('limonade', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_limonade'))
-end)
+    end)
 
-ESX.RegisterUsableItem('drpepper', function(source)
+    ESX.RegisterUsableItem('drpepper', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('drpepper', 1)
@@ -112,9 +112,9 @@ ESX.RegisterUsableItem('drpepper', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_drpepper'))
-end)
+    end)
 
-ESX.RegisterUsableItem('energy', function(source)
+    ESX.RegisterUsableItem('energy', function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	xPlayer.removeInventoryItem('energy', 1)
@@ -122,6 +122,6 @@ ESX.RegisterUsableItem('energy', function(source)
 	TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_energy'))
-end)"
+    end)
 
 merci
