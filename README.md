@@ -2,15 +2,23 @@
 Ce script permet d'avoir le job BurgerShot sur son serveur gta 5 RP (fivem).
 
 ZONE DE BASE:
+
 -Vestiaire
+
 -Coffre
+
 -Menu patron
+
 -Frigo 
+
 -Garage véhicule
 
 MENU F6:
+
 -Menu Facture.
+
 -Menu préparation (couper tomate, cuire steak, mettre patate dans la friteuse, laver la salade).
+
 -Menu Cuisiner (Cuisiner un Hamburger, une barquette de frites).
 
 # Script Requiert
