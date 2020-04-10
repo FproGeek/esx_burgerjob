@@ -11,18 +11,14 @@ local Keys = {
 }
 
 local PlayerData              = {}
-local HasAlreadyEnteredMarker = false
 local LastZone                = nil
 local CurrentAction           = nil
 local CurrentActionMsg        = ''
 local CurrentActionData       = {}
 local Blips                   = {}
 
-local isBarman                = false
+local isBurger                = false
 local isInMarker              = false
-local isInPublicMarker        = false
-local hintIsShowed            = false
-local hintToDisplay           = "no hint to display"
 
 ESX                           = nil
 
@@ -139,7 +135,7 @@ function OpenCloakroomMenu()
     },
     function(data, menu)
 
-      isBarman = false
+      isBurger = false
       cleanPlayer(playerPed)
 
       if data.current.value == 'citizen_wear' then
@@ -150,7 +146,7 @@ function OpenCloakroomMenu()
 
       if data.current.value == 'burgershot_outfit' then
         setUniform(data.current.value, playerPed)
-        isBarman = true
+        isBurger = true
       end
 
       CurrentAction     = 'menu_cloakroom'
@@ -294,7 +290,7 @@ function OpenVehicleSpawnerMenu()
           ESX.Game.SpawnVehicle(vehicleProps.model, vehicles.SpawnPoint, vehicles.Heading, function(vehicle)
               ESX.Game.SetVehicleProperties(vehicle, vehicleProps)
               local playerPed = GetPlayerPed(-1)
-              --TaskWarpPedIntoVehicle(playerPed,  vehicle,  -1)  -- teleport into vehicle
+              TaskWarpPedIntoVehicle(playerPed,  vehicle,  -1)
           end)            
 
           TriggerServerEvent('esx_society:removeVehicleFromGarage', 'burgershot', vehicleProps)
@@ -348,7 +344,7 @@ function OpenVehicleSpawnerMenu()
               y = vehicles.SpawnPoint.y,
               z = vehicles.SpawnPoint.z
             }, vehicles.Heading, function(vehicle)
-              --TaskWarpPedIntoVehicle(playerPed,  vehicle,  -1) -- teleport into vehicle
+              TaskWarpPedIntoVehicle(playerPed,  vehicle,  -1)
               SetVehicleMaxMods(vehicle)
               SetVehicleDirtLevel(vehicle, 0)
             end)
@@ -402,9 +398,8 @@ function OpenSocietyActionsMenu()
   local elements = {}
 
   table.insert(elements, {label = _U('billing'),    value = 'billing'})
-  if (isBarman or IsGradeBoss()) or PlayerData.job.grade_name == 'recruit' or PlayerData.job.grade_name == 'employer' then
-    table.insert(elements, {label = _U('crafting'),    value = 'menu_crafting'})
-  end
+  table.insert(elements, {label = _U('ingredient'),    value = 'menu_ingredient'})
+  table.insert(elements, {label = _U('crafting'),    value = 'menu_crafting'})
 
   ESX.UI.Menu.CloseAll()
 
@@ -430,16 +425,43 @@ function OpenSocietyActionsMenu()
                   align = 'top-left',
                   elements = {
                       {label = _U('burger'),     value = 'burger'},
+                      {label = _U('frites'),     value = 'fritesba'},
                   }
               },
               function(data2, menu2)
             
-                TriggerServerEvent('esx_burgershotjob:craftburger', data2.current.value)
+                TriggerServerEvent('esx_burgerjob:craftingBurger', data2.current.value)
                 animsAction({ lib = "mini@drinking", anim = "shots_barman_b" })
       
               end,
               function(data2, menu2)
                   menu2.close()
+              end
+          )
+      end
+
+       if data.current.value == 'menu_ingredient' then
+        
+          ESX.UI.Menu.Open(
+              'default', GetCurrentResourceName(), 'menu_ingredient',
+              {
+                  title = _U('ingredient'),
+                  align = 'top-left',
+                  elements = {
+                      {label = _U('cuttomate'),     value = 'cuttomate'},
+                      {label = _U('lavesalade'),     value = 'lavesalade'},
+                      {label = _U('cuiresteak'),     value = 'cuiresteak'},
+                      {label = _U('friteuse'),     value = 'friteuse'},
+                  }
+              },
+              function(data2, menu3)
+            
+                TriggerServerEvent('esx_burgerjob:ingredientgBurger', data2.current.value)
+                animsAction({ lib = "mini@drinking", anim = "shots_barman_b" })
+      
+              end,
+              function(data2, menu3)
+                  menu3.close()
               end
           )
       end
@@ -488,7 +510,7 @@ end
 
 function OpenGetStocksMenu()
 
-  ESX.TriggerServerCallback('esx_burgershotjob:getStockItems', function(items)
+  ESX.TriggerServerCallback('esx_burgerjob:getStockItems', function(items)
 
     print(json.encode(items))
 
@@ -524,7 +546,7 @@ function OpenGetStocksMenu()
               menu.close()
               OpenGetStocksMenu()
 
-              TriggerServerEvent('esx_burgershotjob:getStockItem', itemName, count)
+              TriggerServerEvent('esx_burgerjob:getStockItem', itemName, count)
             end
 
           end,
@@ -545,7 +567,7 @@ end
 
 function OpenPutStocksMenu()
 
-ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inventory)
+ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory)
 
     local elements = {}
 
@@ -585,7 +607,68 @@ ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inven
               menu.close()
               OpenPutStocksMenu()
 
-              TriggerServerEvent('esx_burgershotjob:putStockItems', itemName, count)
+              TriggerServerEvent('esx_burgerjob:putStockItems', itemName, count)
+            end
+
+          end,
+          function(data2, menu2)
+            menu2.close()
+          end
+        )
+
+      end,
+      function(data, menu)
+        menu.close()
+      end
+    )
+
+  end)
+
+end
+
+function OpenCutTomateMenu()
+
+ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory)
+
+    local elements = {}
+
+    for i=1, #inventory.items, 1 do
+
+      local item = inventory.items[i]
+
+      if item.count > 0 then
+        table.insert(elements, {label = item.label .. ' x' .. item.count, type = 'item_standard', value = item.name})
+      end
+
+    end
+
+    ESX.UI.Menu.Open(
+      'default', GetCurrentResourceName(), 'Cut_menu',
+      {
+        title    = _U('inventory'),
+        elements = elements
+      },
+      function(data, menu)
+
+        local itemName = data.current.value
+
+        ESX.UI.Menu.Open(
+          'dialog', GetCurrentResourceName(), 'stocks_menu_put_item_count',
+          {
+            title = _U('quantity')
+          },
+          function(data2, menu2)
+
+            local count = tonumber(data2.value)
+
+            if count == nil then
+              ESX.ShowNotification(_U('invalid_quantity'))
+            else
+              menu2.close()
+              menu.close()
+              OpenPutStocksMenu()
+
+              TriggerServerEvent('esx_burgerjob:putStockItems', itemName, count)
             end
 
           end,
@@ -606,7 +689,7 @@ end
 
 function OpenGetFridgeStocksMenu()
 
-  ESX.TriggerServerCallback('esx_burgershotjob:getFridgeStockItems', function(items)
+  ESX.TriggerServerCallback('esx_burgerjob:getFridgeStockItems', function(items)
 
     print(json.encode(items))
 
@@ -642,7 +725,7 @@ function OpenGetFridgeStocksMenu()
               menu.close()
               OpenGetStocksMenu()
 
-              TriggerServerEvent('esx_burgershotjob:getFridgeStockItem', itemName, count)
+              TriggerServerEvent('esx_burgerjob:getFridgeStockItem', itemName, count)
             end
 
           end,
@@ -663,7 +746,7 @@ end
 
 function OpenPutFridgeStocksMenu()
 
-ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inventory)
+ESX.TriggerServerCallback('esx_burgerjob:getPlayerInventory', function(inventory)
 
     local elements = {}
 
@@ -703,7 +786,7 @@ ESX.TriggerServerCallback('esx_burgershotjob:getPlayerInventory', function(inven
               menu.close()
               OpenPutFridgeStocksMenu()
 
-              TriggerServerEvent('esx_burgershotjob:putFridgeStockItems', itemName, count)
+              TriggerServerEvent('esx_burgerjob:putFridgeStockItems', itemName, count)
             end
 
           end,
@@ -724,7 +807,7 @@ end
 
 function OpenGetWeaponMenu()
 
-  ESX.TriggerServerCallback('esx_burgershotjob:getVaultWeapons', function(weapons)
+  ESX.TriggerServerCallback('esx_burgerjob:getVaultWeapons', function(weapons)
 
     local elements = {}
 
@@ -745,7 +828,7 @@ function OpenGetWeaponMenu()
 
         menu.close()
 
-        ESX.TriggerServerCallback('esx_burgershotjob:removeVaultWeapon', function()
+        ESX.TriggerServerCallback('esx_burgerjob:removeVaultWeapon', function()
           OpenGetWeaponMenu()
         end, data.current.value)
 
@@ -787,7 +870,7 @@ function OpenPutWeaponMenu()
 
       menu.close()
 
-      ESX.TriggerServerCallback('esx_burgershotjob:addVaultWeapon', function()
+      ESX.TriggerServerCallback('esx_burgerjob:addVaultWeapon', function()
         OpenPutWeaponMenu()
       end, data.current.value)
 
@@ -824,7 +907,7 @@ function OpenShopMenu(zone)
             elements = elements
         },
         function(data, menu)
-            TriggerServerEvent('esx_burgershotjob:buyItem', data.current.value, data.current.price, data.current.realLabel)
+            TriggerServerEvent('esx_burgerjob:buyItem', data.current.value, data.current.price, data.current.realLabel)
         end,
         function(data, menu)
             menu.close()
@@ -872,7 +955,7 @@ function animsAction(animObj)
 end
 
 
-AddEventHandler('esx_burgershotjob:hasEnteredMarker', function(zone)
+AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
  
     if zone == 'BossActions' and IsGradeBoss() then
       CurrentAction     = 'menu_boss_actions'
@@ -900,7 +983,7 @@ AddEventHandler('esx_burgershotjob:hasEnteredMarker', function(zone)
       CurrentActionData = {}
     end
 
-    if zone == 'Flacons' then
+    if zone == 'Alim' then
       CurrentAction     = 'menu_shop'
       CurrentActionMsg  = _U('shop_menu')
       CurrentActionData = {zone = zone}
@@ -926,50 +1009,6 @@ AddEventHandler('esx_burgershotjob:hasEnteredMarker', function(zone)
       end
 
     end
-
-    if Config.EnableHelicopters then
-        if zone == 'Helicopters' then
-
-          local helicopters = Config.Zones.Helicopters
-
-          if not IsAnyVehicleNearPoint(helicopters.SpawnPoint.x, helicopters.SpawnPoint.y, helicopters.SpawnPoint.z,  3.0) then
-
-            ESX.Game.SpawnVehicle('swift2', {
-              x = helicopters.SpawnPoint.x,
-              y = helicopters.SpawnPoint.y,
-              z = helicopters.SpawnPoint.z
-            }, helicopters.Heading, function(vehicle)
-              SetVehicleModKit(vehicle, 0)
-              SetVehicleLivery(vehicle, 0)
-            end)
-
-          end
-
-        end
-
-        if zone == 'HelicopterDeleters' then
-
-          local playerPed = GetPlayerPed(-1)
-
-          if IsPedInAnyVehicle(playerPed,  false) then
-
-            local vehicle = GetVehiclePedIsIn(playerPed,  false)
-
-            CurrentAction     = 'delete_vehicle'
-            CurrentActionMsg  = _U('store_vehicle')
-            CurrentActionData = {vehicle = vehicle}
-          end
-
-        end
-    end
-
-
-end)
-
-AddEventHandler('esx_burgershotjob:hasExitedMarker', function(zone)
-
-    CurrentAction = nil
-    ESX.UI.Menu.CloseAll()
 
 end)
 
@@ -1043,12 +1082,12 @@ Citizen.CreateThread(function()
             if (isInMarker and not HasAlreadyEnteredMarker) or (isInMarker and LastZone ~= currentZone) then
                 HasAlreadyEnteredMarker = true
                 LastZone                = currentZone
-                TriggerEvent('esx_burgershotjob:hasEnteredMarker', currentZone)
+                TriggerEvent('esx_burgerjob:hasEnteredMarker', currentZone)
             end
 
             if not isInMarker and HasAlreadyEnteredMarker then
                 HasAlreadyEnteredMarker = false
-                TriggerEvent('esx_burgershotjob:hasExitedMarker', LastZone)
+                TriggerEvent('esx_burgerjob:hasExitedMarker', LastZone)
             end
 
         end
@@ -1142,86 +1181,6 @@ Citizen.CreateThread(function()
         OpenSocietyActionsMenu()
     end
 
-
-  end
-end)
-
-
------------------------
------ TELEPORTERS -----
-
-AddEventHandler('esx_burgershotjob:teleportMarkers', function(position)
-  SetEntityCoords(GetPlayerPed(-1), position.x, position.y, position.z)
-end)
-
--- Show top left hint
-Citizen.CreateThread(function()
-  while true do
-    Wait(0)
-    if hintIsShowed == true then
-      SetTextComponentFormat("STRING")
-      AddTextComponentString(hintToDisplay)
-      DisplayHelpTextFromStringLabel(0, 0, 1, -1)
-    end
-  end
-end)
-
--- Display teleport markers
-Citizen.CreateThread(function()
-  while true do
-    Wait(0)
-
-    if IsJobTrue() then
-
-        local coords = GetEntityCoords(GetPlayerPed(-1))
-        for k,v in pairs(Config.TeleportZones) do
-          if(v.Marker ~= -1 and GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < Config.DrawDistance) then
-            DrawMarker(v.Marker, v.Pos.x, v.Pos.y, v.Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, v.Size.x, v.Size.y, v.Size.z, v.Color.r, v.Color.g, v.Color.b, 100, false, true, 2, false, false, false, false)
-          end
-        end
-
-    end
-
-  end
-end)
-
--- Activate teleport marker
-Citizen.CreateThread(function()
-  while true do
-    Wait(0)
-    local coords      = GetEntityCoords(GetPlayerPed(-1))
-    local position    = nil
-    local zone        = nil
-
-    if IsJobTrue() then
-
-        for k,v in pairs(Config.TeleportZones) do
-          if(GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < v.Size.x) then
-            isInPublicMarker = true
-            position = v.Teleport
-            zone = v
-            break
-          else
-            isInPublicMarker  = false
-          end
-        end
-
-        if IsControlJustReleased(0, Keys["E"]) and isInPublicMarker then
-          TriggerEvent('esx_burgershotjob:teleportMarkers', position)
-        end
-
-        -- hide or show top left zone hints
-        if isInPublicMarker then
-          hintToDisplay = zone.Hint
-          hintIsShowed = true
-        else
-          if not isInMarker then
-            hintToDisplay = "no hint to display"
-            hintIsShowed = false
-          end
-        end
-
-    end
 
   end
 end)
