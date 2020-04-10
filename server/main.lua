@@ -11,11 +11,10 @@ TriggerEvent('esx_society:registerSociety', 'burgershot', 'burgershot', 'society
 
 
 
-RegisterServerEvent('esx_burgershotjob:getStockItem')
-AddEventHandler('esx_burgershotjob:getStockItem', function(itemName, count)
+RegisterServerEvent('esx_burgerjob:getStockItem')
+AddEventHandler('esx_burgerjob:getStockItem', function(itemName, count)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot', function(inventory)
 
@@ -34,7 +33,7 @@ AddEventHandler('esx_burgershotjob:getStockItem', function(itemName, count)
 
 end)
 
-ESX.RegisterServerCallback('esx_burgershotjob:getStockItems', function(source, cb)
+ESX.RegisterServerCallback('esx_burgerjob:getStockItems', function(source, cb)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot', function(inventory)
     cb(inventory.items)
@@ -42,11 +41,10 @@ ESX.RegisterServerCallback('esx_burgershotjob:getStockItems', function(source, c
 
 end)
 
-RegisterServerEvent('esx_burgershotjob:putStockItems')
-AddEventHandler('esx_burgershotjob:putStockItems', function(itemName, count)
+RegisterServerEvent('esx_burgerjob:putStockItems')
+AddEventHandler('esx_burgerjob:putStockItems', function(itemName, count)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot', function(inventory)
 
@@ -67,11 +65,10 @@ AddEventHandler('esx_burgershotjob:putStockItems', function(itemName, count)
 end)
 
 
-RegisterServerEvent('esx_burgershotjob:getFridgeStockItem')
-AddEventHandler('esx_burgershotjob:getFridgeStockItem', function(itemName, count)
+RegisterServerEvent('esx_burgerjob:getFridgeStockItem')
+AddEventHandler('esx_burgerjob:getFridgeStockItem', function(itemName, count)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot_fridge', function(inventory)
 
@@ -90,7 +87,7 @@ AddEventHandler('esx_burgershotjob:getFridgeStockItem', function(itemName, count
 
 end)
 
-ESX.RegisterServerCallback('esx_burgershotjob:getFridgeStockItems', function(source, cb)
+ESX.RegisterServerCallback('esx_burgerjob:getFridgeStockItems', function(source, cb)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot_fridge', function(inventory)
     cb(inventory.items)
@@ -98,11 +95,10 @@ ESX.RegisterServerCallback('esx_burgershotjob:getFridgeStockItems', function(sou
 
 end)
 
-RegisterServerEvent('esx_burgershotjob:putFridgeStockItems')
-AddEventHandler('esx_burgershotjob:putFridgeStockItems', function(itemName, count)
+RegisterServerEvent('esx_burgerjob:putFridgeStockItems')
+AddEventHandler('esx_burgerjob:putFridgeStockItems', function(itemName, count)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   TriggerEvent('esx_addoninventory:getSharedInventory', 'society_burgershot_fridge', function(inventory)
 
@@ -123,11 +119,11 @@ AddEventHandler('esx_burgershotjob:putFridgeStockItems', function(itemName, coun
 end)
 
 
-RegisterServerEvent('esx_burgershotjob:buyItem')
-AddEventHandler('esx_burgershotjob:buyItem', function(itemName, price, itemLabel)
+RegisterServerEvent('esx_burgerjob:buyItem')
+AddEventHandler('esx_burgerjob:buyItem', function(itemName, price, itemLabel)
 
     local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
+    local xPlayer  = ESX.GetPlayerFromId(_source)
     local limit = xPlayer.getInventoryItem(itemName).limit
     local qtty = xPlayer.getInventoryItem(itemName).count
     local societyAccount = nil
@@ -151,41 +147,180 @@ AddEventHandler('esx_burgershotjob:buyItem', function(itemName, price, itemLabel
 end)
 
 
-RegisterServerEvent('esx_burgershotjob:craftburger')
-AddEventHandler('esx_burgershotjob:craftburger', function(itemValue)
+RegisterServerEvent('esx_burgerjob:ingredientgBurger')
+AddEventHandler('esx_burgerjob:ingredientgBurger', function(itemValue)
 
     local _source = source
     local _itemValue = itemValue
-    TriggerClientEvent('esx:showNotification', _source, _U('assembling_cocktail'))
+    TriggerClientEvent('esx:showNotification', _source, _U('assembling_ingredient'))
 
-    if _itemValue == 'burger' then
+ if _itemValue == 'cuttomate' then
+        SetTimeout(10000, function()        
+
+            local xPlayer           = ESX.GetPlayerFromId(_source)
+
+            local alephQuantity     = xPlayer.getInventoryItem('tomater').count
+
+            if alephQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('tomater') .. '~w~')
+            else
+                local chanceToMiss = math.random(100)
+                if chanceToMiss <= Config.MissCraft then
+                    TriggerClientEvent('esx:showNotification', _source, _U('term_miss'))
+                    xPlayer.removeInventoryItem('tomater', 1)
+                else
+                    TriggerClientEvent('esx:showNotification', _source, _U('tomatec') .. _U(' term') .. ' ~w~!')
+                    xPlayer.removeInventoryItem('tomater', 1)
+                    xPlayer.addInventoryItem('tomatec', 5)
+                end
+            end
+
+        end)
+    end
+
+     if _itemValue == 'lavesalade' then
+        SetTimeout(10000, function()        
+
+            local xPlayer           = ESX.GetPlayerFromId(_source)
+
+            local alephQuantity     = xPlayer.getInventoryItem('salads').count
+
+            if alephQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('salads') .. '~w~')
+            else
+                local chanceToMiss = math.random(100)
+                if chanceToMiss <= Config.MissCraft then
+                    TriggerClientEvent('esx:showNotification', _source, _U('term_miss'))
+                    xPlayer.removeInventoryItem('salads', 1)
+                else
+                    TriggerClientEvent('esx:showNotification', _source, _U('saladp') .. _U(' term') .. ' ~w~!')
+                    xPlayer.removeInventoryItem('salads', 1)
+                    xPlayer.addInventoryItem('saladp', 5)
+                end
+            end
+
+        end)
+    end
+
+         if _itemValue == 'cuiresteak' then
+        SetTimeout(10000, function()        
+
+            local xPlayer           = ESX.GetPlayerFromId(_source)
+
+            local alephQuantity     = xPlayer.getInventoryItem('steakc').count
+
+            if alephQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('steakc') .. '~w~')
+            else
+                local chanceToMiss = math.random(100)
+                if chanceToMiss <= Config.MissCraft then
+                    TriggerClientEvent('esx:showNotification', _source, _U('term_miss'))
+                    xPlayer.removeInventoryItem('steakc', 1)
+                else
+                    TriggerClientEvent('esx:showNotification', _source, _U('steakcui') .. _U(' term') .. ' ~w~!')
+                    xPlayer.removeInventoryItem('steakc', 1)
+                    xPlayer.addInventoryItem('steakcui', 1)
+                end
+            end
+
+        end)
+    end
+
+             if _itemValue == 'friteuse' then
+        SetTimeout(10000, function()        
+
+            local xPlayer           = ESX.GetPlayerFromId(_source)
+
+            local alephQuantity     = xPlayer.getInventoryItem('patate').count
+
+            if alephQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('patate') .. '~w~')
+            else
+                local chanceToMiss = math.random(100)
+                if chanceToMiss <= Config.MissCraft then
+                    TriggerClientEvent('esx:showNotification', _source, _U('term_miss'))
+                    xPlayer.removeInventoryItem('patate', 1)
+                else
+                    TriggerClientEvent('esx:showNotification', _source, _U('patatefrie') .. _U(' term') .. ' ~w~!')
+                    xPlayer.removeInventoryItem('patate', 1)
+                    xPlayer.addInventoryItem('patatefrie', 1)
+                end
+            end
+
+        end)
+    end
+
+end)
+
+RegisterServerEvent('esx_burgerjob:craftingBurger')
+AddEventHandler('esx_burgerjob:craftingBurger', function(itemValue)
+
+    local _source = source
+    local _itemValue = itemValue
+    TriggerClientEvent('esx:showNotification', _source, _U('assembling_burger'))
+
+ if _itemValue == 'burger' then
         SetTimeout(10000, function()        
 
             local xPlayer           = ESX.GetPlayerFromId(_source)
 
             local alephQuantity     = xPlayer.getInventoryItem('bread').count
-            local bethQuantity      = xPlayer.getInventoryItem('steak').count
-            local gimelQuantity     = xPlayer.getInventoryItem('cheese').count
+            local bethQuantity      = xPlayer.getInventoryItem('fromage').count
+            local gimelQuantity     = xPlayer.getInventoryItem('tomatec').count
+            local daletQuantity     = xPlayer.getInventoryItem('saladp').count
+            local gameQuantity     = xPlayer.getInventoryItem('steakcui').count 
 
             if alephQuantity < 2 then
                 TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('bread') .. '~w~')
-            elseif bethQuantity < 1 then
-                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('steak') .. '~w~')
+            elseif bethQuantity < 2 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('fromage') .. '~w~')
             elseif gimelQuantity < 2 then
-                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('cheese') .. '~w~')
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('tomatec') .. '~w~')
+            elseif daletQuantity < 2 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('saladp') .. '~w~')
+            elseif gameQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('steakcui') .. '~w~')
             else
                 local chanceToMiss = math.random(100)
                 if chanceToMiss <= Config.MissCraft then
                     TriggerClientEvent('esx:showNotification', _source, _U('craft_miss'))
                     xPlayer.removeInventoryItem('bread', 2)
-                    xPlayer.removeInventoryItem('steak', 1)
-                    xPlayer.removeInventoryItem('cheese', 2)
+                    xPlayer.removeInventoryItem('fromage', 2)
+                    xPlayer.removeInventoryItem('tomatec', 2)
+                    xPlayer.removeInventoryItem('saladp', 2)
+                    xPlayer.removeInventoryItem('steakcui', 1)
                 else
-                    TriggerClientEvent('esx:showNotification', _source, _U('craft') .. _U('burger') .. ' ~w~!')
+                    TriggerClientEvent('esx:showNotification', _source, _U('burger') .. _U(' craft') .. ' ~w~!')
                     xPlayer.removeInventoryItem('bread', 2)
-                    xPlayer.removeInventoryItem('steak', 1)
-                    xPlayer.removeInventoryItem('cheese', 2)
+                    xPlayer.removeInventoryItem('fromage', 2)
+                    xPlayer.removeInventoryItem('tomatec', 2)
+                    xPlayer.removeInventoryItem('saladp', 2)
+                    xPlayer.removeInventoryItem('steakcui', 1)
                     xPlayer.addInventoryItem('burger', 1)
+                end
+            end
+
+        end)
+    end
+
+     if _itemValue == 'fritesba' then
+        SetTimeout(10000, function()        
+
+            local xPlayer           = ESX.GetPlayerFromId(_source)
+
+            local alephQuantity     = xPlayer.getInventoryItem('patatefrie').count 
+
+            if alephQuantity < 1 then
+                TriggerClientEvent('esx:showNotification', _source, _U('not_enough') .. _U('patatefrie') .. '~w~')
+            else
+                local chanceToMiss = math.random(100)
+                if chanceToMiss <= Config.MissCraft then
+                    TriggerClientEvent('esx:showNotification', _source, _U('craft_miss'))
+                    xPlayer.removeInventoryItem('patatefrie', 1)
+                else
+                    TriggerClientEvent('esx:showNotification', _source, _U('frites') .. _U(' craft') .. ' ~w~!')
+                    xPlayer.removeInventoryItem('patatefrie', 1)
+                    xPlayer.addInventoryItem('frites', 1)
                 end
             end
 
@@ -195,7 +330,7 @@ AddEventHandler('esx_burgershotjob:craftburger', function(itemValue)
 end)
 
 
-ESX.RegisterServerCallback('esx_burgershotjob:getVaultWeapons', function(source, cb)
+ESX.RegisterServerCallback('esx_burgerjob:getVaultWeapons', function(source, cb)
 
   TriggerEvent('esx_datastore:getSharedDataStore', 'society_burgershot', function(store)
 
@@ -211,10 +346,9 @@ ESX.RegisterServerCallback('esx_burgershotjob:getVaultWeapons', function(source,
 
 end)
 
-ESX.RegisterServerCallback('esx_burgershotjob:addVaultWeapon', function(source, cb, weaponName)
+ESX.RegisterServerCallback('esx_burgerjob:addVaultWeapon', function(source, cb, weaponName)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   xPlayer.removeWeapon(weaponName)
 
@@ -250,10 +384,9 @@ ESX.RegisterServerCallback('esx_burgershotjob:addVaultWeapon', function(source, 
 
 end)
 
-ESX.RegisterServerCallback('esx_burgershotjob:removeVaultWeapon', function(source, cb, weaponName)
+ESX.RegisterServerCallback('esx_burgerjob:removeVaultWeapon', function(source, cb, weaponName)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer = ESX.GetPlayerFromId(source)
 
   xPlayer.addWeapon(weaponName, 1000)
 
@@ -289,10 +422,9 @@ ESX.RegisterServerCallback('esx_burgershotjob:removeVaultWeapon', function(sourc
 
 end)
 
-ESX.RegisterServerCallback('esx_burgershotjob:getPlayerInventory', function(source, cb)
+ESX.RegisterServerCallback('esx_burgerjob:getPlayerInventory', function(source, cb)
 
-  local _source = source
-  local xPlayer = ESX.GetPlayerFromId(_source)
+  local xPlayer    = ESX.GetPlayerFromId(source)
   local items      = xPlayer.inventory
 
   cb({
