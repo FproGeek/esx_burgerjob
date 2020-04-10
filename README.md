@@ -36,10 +36,10 @@ esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 
 # Installation
 1) Ajouter ce mapping sur votre serveur : https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem, oubliez pas de marquer le dossier dans server.cfg.
-2) Ouvrez l'archive "esx_burgerjob 1.2.0"
+2) Ouvrez l'archive "esx_burgerjob"
 3) Placer le dossier "esx_burgerjob" dans /[esx]
 4) Importer esx_burgerjob.sql dans votre base de donnée
-5) Ajouter cette ligne dans votre server.cfg : start esx_burgerjob
+5) Ajouter cette ligne dans votre server.cfg : ensure esx_burgerjob
 
 # Manger l'hamburger, les frites et les boissons.
 Pour rendre possible le pouvoir de manger son hamburger et ses frites ainsi que boire le soda etc.. , vous devez vous rendre dans esx_basicneeds puis dans /server/main.lua et ajouter : 
@@ -123,5 +123,3 @@ Pour rendre possible le pouvoir de manger son hamburger et ses frites ainsi que 
 	TriggerClientEvent('esx_basicneeds:onDrink', source)
 	TriggerClientEvent('esx:showNotification', source, _U('used_energy'))
     end)
-
-merci
