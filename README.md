@@ -1,6 +1,8 @@
 # esx_burgerjob 1.2.0
 Ce script permet d'avoir le job BurgerShot sur son serveur gta 5 RP (fivem).
 
+[! [] (http://img.youtube.com/vi/a4xZCacduKo/0.jpg)] (http://www.youtube.com/watch?v=a4xZCacduKo "")
+
 ### ZONE DE BASE:
 
 -Vestiaire
