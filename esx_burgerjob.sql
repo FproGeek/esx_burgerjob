@@ -1,4 +1,5 @@
 
+
 INSERT INTO `addon_account` (name, label, shared) VALUES
   ('society_burgershot', 'Burgershot', 1)
 ;
@@ -17,10 +18,10 @@ INSERT INTO `jobs` (name, label) VALUES
 ;
 
 INSERT INTO `job_grades` (job_name, grade, name, label, salary, skin_male, skin_female) VALUES
-  (burgershot, 0, 'recruit', 'Recrue', 300, '{}', '{}'),
-  (burgershot, 1, 'employed', 'Employé', 300, '{}', '{}'),
-  (burgershot, 2, 'viceboss', 'Co-gérant', 500, '{}', '{}'),
-  (burgershot, 3, 'boss', 'Gérant', 600, '{}', '{}')
+  ('burgershot', 0, 'recruit', 'Recrue', 300, '{}', '{}'),
+  ('burgershot', 1, 'employed', 'Employé', 300, '{}', '{}'),
+  ('burgershot', 2, 'viceboss', 'Co-gérant', 500, '{}', '{}'),
+  ('burgershot', 3, 'boss', 'Gérant', 600, '{}', '{}')
 ;
 
 INSERT INTO `items` (`name`, `label`, `limit`) VALUES  
