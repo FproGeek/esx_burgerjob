@@ -37,7 +37,7 @@ INSERT INTO `items` (`name`, `label`, `limit`) VALUES
     ('saladp', 'Feuille de salade', 5),
     ('tomatec', 'Rondelle de tomate', 5),
     ('patate', 'Pomme de terre', 5),
-    ('patatefrie', 'Pomme de terre frie', 5),
+    ('patatefrie', 'Pomme de terre frit', 5),
     ('frites', 'Barquette de frites', 10),
     ('burger', 'Hamburger', 10),
     ('soda', 'Soda', 5),
