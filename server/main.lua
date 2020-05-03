@@ -1,4 +1,11 @@
+print("^0======================================================================^7")
+print("^3Copyright 2019-2020 esx_burgerjob ^5V2.0 ^3by ^1FproGeek^0")
+print("^5https://github.com/FproGeek/esx_burgerjob^0")
+print("^0======================================================================^7")
+
 ESX                = nil
+local PlayersTransforming, PlayersSelling, PlayersHarvesting = {}, {}, {}
+local ketchup = 1
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -9,7 +16,164 @@ end
 TriggerEvent('esx_phone:registerNumber', 'burgershot', _U('burgershot_customer'), true, true)
 TriggerEvent('esx_society:registerSociety', 'burgershot', 'burgershot', 'society_burgershot', 'society_burgershot', 'society_burgershot', {type = 'private'})
 
+local function Harvest(source, zone)
+  if PlayersHarvesting[source] == true then
 
+    local xPlayer  = ESX.GetPlayerFromId(source)
+    if zone == "KetchupFarm" then
+      local itemQuantity = xPlayer.getInventoryItem('caisseketchup').count
+      if itemQuantity >= 40 then
+        TriggerClientEvent('esx:showNotification', xPlayer.source, _U('not_enough_place')) 
+        return
+      else
+        SetTimeout(1800, function()
+          xPlayer.addInventoryItem('caisseketchup', 1)
+          Harvest(source, zone)
+        end)
+      end
+    end
+  end
+end
+
+RegisterServerEvent('esx_burgerjob:startHarvest')
+AddEventHandler('esx_burgerjob:startHarvest', function(zone)
+  local _source = source
+    
+  if PlayersHarvesting[_source] == false then
+    TriggerClientEvent('esx:showNotification', _source, '~r~C\'est pas bien de glitch ~w~')
+    PlayersHarvesting[_source]=false
+  else
+    PlayersHarvesting[_source]=true
+    TriggerClientEvent('esx:showNotification', _source, _U('ketchup_taken'))  
+    Harvest(_source,zone)
+  end
+end)
+
+RegisterServerEvent('esx_burgerjob:stopHarvest')
+AddEventHandler('esx_burgerjob:stopHarvest', function()
+  local _source = source
+  
+  if PlayersHarvesting[_source] == true then
+    PlayersHarvesting[_source]=false
+    TriggerClientEvent('esx:showNotification', _source, 'Vous sortez de la ~r~zone')
+  else
+    TriggerClientEvent('esx:showNotification', _source, 'Vous pouvez ~g~récupérer les caisses')
+    PlayersHarvesting[_source]=true
+  end
+end)
+
+local function Transform(source, zone)
+
+  if PlayersTransforming[source] == true then
+
+    local xPlayer  = ESX.GetPlayerFromId(source)
+    if zone == "SachetKetchup" then
+      local itemQuantity = xPlayer.getInventoryItem('caisseketchup').count
+
+      if itemQuantity <= 0 then
+        TriggerClientEvent('esx:showNotification', xPlayer.source, _U('not_enough_caisseketchup'))
+        return
+      else
+          SetTimeout(1800, function()
+            xPlayer.removeInventoryItem('caisseketchup', 1)
+            xPlayer.addInventoryItem('sachetketchup', 10)
+            Transform(source, zone)
+          end)
+        end
+      end
+      end
+    end
+
+RegisterServerEvent('esx_burgerjob:startTransform')
+AddEventHandler('esx_burgerjob:startTransform', function(zone)
+  local _source = source
+    
+  if PlayersTransforming[_source] == false then
+    TriggerClientEvent('esx:showNotification', _source, '~r~C\'est pas bien de glitch ~w~')
+    PlayersTransforming[_source]=false
+  else
+    PlayersTransforming[_source]=true
+    TriggerClientEvent('esx:showNotification', _source, _U('sachet_in_progress')) 
+    Transform(_source,zone)
+  end
+end)
+
+RegisterServerEvent('esx_burgerjob:stopTransform')
+AddEventHandler('esx_burgerjob:stopTransform', function()
+  local _source = source
+  
+  if PlayersTransforming[_source] == true then
+    PlayersTransforming[_source]=false
+    TriggerClientEvent('esx:showNotification', _source, 'Vous sortez de la ~r~zone')
+    
+  else
+    TriggerClientEvent('esx:showNotification', _source, 'Vous pouvez ~g~mettre en sachet votre ketchup')
+    PlayersTransforming[_source]=true
+  end
+end)
+
+local function Sell(source, zone)
+
+  if PlayersSelling[source] == true then
+    local xPlayer  = ESX.GetPlayerFromId(source)
+    
+    if zone == 'SellFarm' then
+      if xPlayer.getInventoryItem('sachetketchup').count <= 0 then
+        xPlayer.showNotification(_U('no_sachet_sale'))
+        ketchup = 0
+        return
+      else
+        if (ketchup == 1) then
+          SetTimeout(1100, function()
+            local moneysociety = math.random(4,6)
+            local money = math.random(2,3)
+            xPlayer.removeInventoryItem('sachetketchup', 1)
+            xPlayer.addMoney(money)
+              TriggerClientEvent('esx:showNotification', xPlayer.source, _U('comp_earned_private') .. money)
+            local societyAccount = nil
+
+            TriggerEvent('esx_addonaccount:getSharedAccount', 'society_burgershot', function(account)
+              societyAccount = account
+            end)
+            if societyAccount ~= nil then
+              societyAccount.addMoney(moneysociety)
+              TriggerClientEvent('esx:showNotification', xPlayer.source, _U('comp_earned') .. moneysociety)
+            end
+            Sell(source,zone)
+          end)
+        end
+      end
+    end
+  end
+end
+
+RegisterServerEvent('esx_burgerjob:startSell')
+AddEventHandler('esx_burgerjob:startSell', function(zone)
+  local _source = source
+
+  if PlayersSelling[_source] == false then
+    TriggerClientEvent('esx:showNotification', _source, '~r~C\'est pas bien de glitch ~w~')
+    PlayersSelling[_source]=false
+  else
+    PlayersSelling[_source]=true
+    TriggerClientEvent('esx:showNotification', _source, _U('sale_in_prog'))
+    Sell(_source, zone)
+  end
+end)
+
+RegisterServerEvent('esx_burgerjob:stopSell')
+AddEventHandler('esx_burgerjob:stopSell', function()
+  local _source = source
+  
+  if PlayersSelling[_source] == true then
+    PlayersSelling[_source]=false
+    TriggerClientEvent('esx:showNotification', _source, 'Vous sortez de la ~r~zone')
+    
+  else
+    TriggerClientEvent('esx:showNotification', _source, 'Vous pouvez ~g~vendre')
+    PlayersSelling[_source]=true
+  end
+end)
 
 RegisterServerEvent('esx_burgerjob:getStockItem')
 AddEventHandler('esx_burgerjob:getStockItem', function(itemName, count)
@@ -63,7 +227,6 @@ AddEventHandler('esx_burgerjob:putStockItems', function(itemName, count)
   end)
 
 end)
-
 
 RegisterServerEvent('esx_burgerjob:getFridgeStockItem')
 AddEventHandler('esx_burgerjob:getFridgeStockItem', function(itemName, count)
@@ -141,7 +304,7 @@ AddEventHandler('esx_burgerjob:buyItem', function(itemName, price, itemLabel)
             TriggerClientEvent('esx:showNotification', _source, _U('max_item'))
         end
     else
-        TriggerClientEvent('esx:showNotification', _source, _U('not_enough'))
+        TriggerClientEvent('esx:showNotification', _source, _U('not_enough_fric'))
     end
 
 end)
@@ -431,4 +594,84 @@ ESX.RegisterServerCallback('esx_burgerjob:getPlayerInventory', function(source, 
     items      = items
   })
 
+end)
+
+ESX.RegisterUsableItem('burger', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('burger', 1)
+
+TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
+TriggerClientEvent('esx_basicneeds:onEat', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_burger'))
+end)
+
+ESX.RegisterUsableItem('frites', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('frites', 1)
+
+TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
+TriggerClientEvent('esx_basicneeds:onEat', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_frites'))
+end)
+
+ESX.RegisterUsableItem('soda', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('soda', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_soda'))
+end)
+
+ESX.RegisterUsableItem('icetea', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('icetea', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_icetea'))
+end)
+
+ESX.RegisterUsableItem('jusfruit', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('jusfruit', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_jusfruit'))
+end)
+
+ESX.RegisterUsableItem('limonade', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('limonade', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_limonade'))
+end)
+
+ESX.RegisterUsableItem('drpepper', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('drpepper', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_drpepper'))
+end)
+
+ESX.RegisterUsableItem('energy', function(source)
+local xPlayer = ESX.GetPlayerFromId(source)
+
+xPlayer.removeInventoryItem('energy', 1)
+
+TriggerClientEvent('esx_status:add', source, 'thirst', 200000)
+TriggerClientEvent('esx_basicneeds:onDrink', source)
+TriggerClientEvent('esx:showNotification', source, _U('used_energy'))
 end)
