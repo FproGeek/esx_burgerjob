@@ -41,5 +41,7 @@ INSERT INTO `items` (`name`, `label`, `limit`) VALUES
     ('icetea', 'Ice Tea', 10),
     ('energy', 'Energy Drink', 10),
     ('drpepper', 'Dr. Pepper', 10),
-    ('limonade', 'Limonade', 10)
+    ('limonade', 'Limonade', 10),
+    ('caisseketchup', 'Caisse de Ketchup', 40),
+    ('sachetketchup', 'Sachet de Ketchup', 100)
 ;
