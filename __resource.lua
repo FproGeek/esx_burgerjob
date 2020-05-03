@@ -2,12 +2,12 @@ resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
 
 description 'ESX BurgerJob'
 
-version '1.2.0'
 author 'FproGeek'
+
+version '2.0.0'
 
 client_scripts {
   '@es_extended/locale.lua',
-  'locales/en.lua',
   'locales/fr.lua',
   'config.lua',
   'client/main.lua'
@@ -15,7 +15,6 @@ client_scripts {
 
 server_scripts {
   '@es_extended/locale.lua',
-  'locales/en.lua',
   'locales/fr.lua',
   'config.lua',
   'server/main.lua'
