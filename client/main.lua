@@ -1,3 +1,8 @@
+print("^0======================================================================^7")
+print("^3Copyright 2019-2020 esx_burgerjob ^5V2.0 ^3by ^1FproGeek^0")
+print("^5https://github.com/FproGeek/esx_burgerjob^0")
+print("^0======================================================================^7")
+
 local Keys = {
   ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
   ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
@@ -15,18 +20,27 @@ local LastZone                = nil
 local CurrentAction           = nil
 local CurrentActionMsg        = ''
 local CurrentActionData       = {}
-local Blips                   = {}
+local JobBlips                = {}
 
+local publicBlip              = false
 local isBurger                = false
 local isInMarker              = false
 
-ESX                           = nil
+EPlayerData = {}
 
-Citizen.CreateThread(function()
-  while ESX == nil do
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-    Citizen.Wait(0)
-  end
+local done = false
+
+ESX = nil
+ Citizen.CreateThread(function()
+    while ESX == nil do
+        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+        Citizen.Wait(0)
+    end
+    while ESX.GetPlayerData().job == nil do
+        Citizen.Wait(10)
+    end
+    PlayerData = ESX.GetPlayerData()
+    done = true
 end)
 
 function IsJobTrue()
@@ -49,28 +63,18 @@ function IsGradeBoss()
     end
 end
 
-function SetVehicleMaxMods(vehicle)
-
-  local props = {
-    modEngine       = 0,
-    modBrakes       = 0,
-    modTransmission = 0,
-    modSuspension   = 0,
-    modTurbo        = false,
-  }
-
-  ESX.Game.SetVehicleProperties(vehicle, props)
-
-end
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
   PlayerData = xPlayer
+  blips()
 end)
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
   PlayerData.job = job
+  	deleteBlips()
+	blips()
 end)
 
 
@@ -345,7 +349,6 @@ function OpenVehicleSpawnerMenu()
               z = vehicles.SpawnPoint.z
             }, vehicles.Heading, function(vehicle)
               TaskWarpPedIntoVehicle(playerPed,  vehicle,  -1)
-              SetVehicleMaxMods(vehicle)
               SetVehicleDirtLevel(vehicle, 0)
             end)
 
@@ -969,6 +972,24 @@ AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
       CurrentActionData = {}
     end
 
+    if zone == 'KetchupFarm' then
+    CurrentAction     = 'ketchup_harvest'
+    CurrentActionMsg  = _U('press_collect')
+    CurrentActionData = {zone= zone}
+  end
+    
+    if zone == 'SachetKetchup' then
+    CurrentAction     = 'ketchup_sachet'
+    CurrentActionMsg  = _U('press_collectsachet')
+    CurrentActionData = {zone= zone}
+  end   
+    
+    if zone == 'SellFarm'  then
+    CurrentAction     = 'farm_resell'
+    CurrentActionMsg  = _U('press_sell')
+    CurrentActionData = {zone = zone}
+  end
+
     if Config.EnableVaultManagement then
       if zone == 'Vaults' then
         CurrentAction     = 'menu_vault'
@@ -1012,6 +1033,13 @@ AddEventHandler('esx_burgerjob:hasEnteredMarker', function(zone)
 
 end)
 
+AddEventHandler('esx_burgerjob:hasExitedMarker', function(zone)
+
+    CurrentAction = nil
+    ESX.UI.Menu.CloseAll()
+
+end)
+
 RegisterNetEvent('esx_phone:loaded')
 AddEventHandler('esx_phone:loaded', function(phoneNumber, contacts)
   local specialContact = {
@@ -1022,24 +1050,57 @@ AddEventHandler('esx_phone:loaded', function(phoneNumber, contacts)
   TriggerEvent('esx_phone:addSpecialContact', specialContact.name, specialContact.number, specialContact.base64Icon)
 end)
 
--- Create blips
-Citizen.CreateThread(function()
-
-    local blipMarker = Config.Blips.Blip
-    local blipCoord = AddBlipForCoord(blipMarker.Pos.x, blipMarker.Pos.y, blipMarker.Pos.z)
-
-    SetBlipSprite (blipCoord, blipMarker.Sprite)
-    SetBlipDisplay(blipCoord, blipMarker.Display)
-    SetBlipScale  (blipCoord, blipMarker.Scale)
-    SetBlipColour (blipCoord, blipMarker.Colour)
-    SetBlipAsShortRange(blipCoord, true)
-
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(_U('map_blip'))
-    EndTextCommandSetBlipName(blipCoord)
 
 
-end)
+function deleteBlips()
+	if JobBlips[1] ~= nil then
+		for i=1, #JobBlips, 1 do
+		RemoveBlip(JobBlips[i])
+		JobBlips[i] = nil
+		end
+	end
+end
+
+-- Create Blips
+function blips()
+	if publicBlip == false then
+		local blip = AddBlipForCoord(Config.Blips.Blip.Pos.x, Config.Blips.Blip.Pos.y, Config.Blips.Blip.Pos.z)
+		local blipMarker = Config.Blips.Blip
+
+		SetBlipSprite (blip, blipMarker.Sprite)
+		SetBlipDisplay(blip, blipMarker.Display)
+		SetBlipScale  (blip, blipMarker.Scale)
+		SetBlipColour (blip, blipMarker.Colour)
+		SetBlipAsShortRange(blip, true)
+
+		BeginTextCommandSetBlipName('STRING')
+		AddTextComponentString(_U('map_blip'))
+		EndTextCommandSetBlipName(blip)
+		publicBlip = true
+	end
+	
+    if PlayerData.job ~= nil and PlayerData.job.name == 'burgershot' then
+
+		for k,v in pairs(Config.Zones)do
+			if v.Type == 1 then
+				local blip2 = AddBlipForCoord(v.Pos.x, v.Pos.y, v.Pos.z)
+				local blipMarker2 = Config.Blips.Blip
+
+
+				SetBlipSprite (blip2, blipMarker2.Sprite)
+				SetBlipDisplay(blip2, blipMarker2.Display)
+				SetBlipScale  (blip2, blipMarker2.Scale)
+				SetBlipColour (blip2, blipMarker2.Colour)
+				SetBlipAsShortRange(blip2, true)
+
+				BeginTextCommandSetBlipName('STRING')
+				AddTextComponentString(v.Name)
+				EndTextCommandSetBlipName(blip2)
+				table.insert(JobBlips, blip2)
+			end
+		end
+	end
+end
 
 -- Display markers
 Citizen.CreateThread(function()
@@ -1095,6 +1156,20 @@ Citizen.CreateThread(function()
     end
 end)
 
+AddEventHandler('esx_burgerjob:hasExitedMarker', function(zone)
+  ESX.UI.Menu.CloseAll()
+  if (zone == 'KetchupFarm') and PlayerData.job ~= nil and PlayerData.job.name == 'burgershot' then
+    TriggerServerEvent('esx_burgerjob:stopHarvest')
+  end  
+  if (zone == 'SachetKetchup') and PlayerData.job ~= nil and PlayerData.job.name == 'burgershot' then
+    TriggerServerEvent('esx_burgerjob:stopTransform')
+  end
+  if (zone == 'SellFarm') and PlayerData.job ~= nil and PlayerData.job.name == 'burgershot' then
+    TriggerServerEvent('esx_burgerjob:stopSell')
+  end
+  CurrentAction = nil
+end)
+
 -- Key Controls
 Citizen.CreateThread(function()
   while true do
@@ -1111,6 +1186,16 @@ Citizen.CreateThread(function()
 
         if CurrentAction == 'menu_cloakroom' then
             OpenCloakroomMenu()
+        end
+
+        if CurrentAction == 'ketchup_harvest' then
+          TriggerServerEvent('esx_burgerjob:startHarvest', CurrentActionData.zone)
+        end
+        if CurrentAction == 'ketchup_sachet' then
+          TriggerServerEvent('esx_burgerjob:startTransform', CurrentActionData.zone)
+        end
+        if CurrentAction == 'farm_resell' then
+          TriggerServerEvent('esx_burgerjob:startSell', CurrentActionData.zone)
         end
 
         if CurrentAction == 'menu_vault' then
