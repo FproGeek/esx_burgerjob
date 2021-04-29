@@ -287,7 +287,7 @@ AddEventHandler('esx_burgerjob:buyItem', function(itemName, price, itemLabel)
 
     local _source = source
     local xPlayer  = ESX.GetPlayerFromId(_source)
-    local limit = xPlayer.getInventoryItem(itemName).limit
+    local weight = xPlayer.getInventoryItem(itemName).weight
     local qtty = xPlayer.getInventoryItem(itemName).count
     local societyAccount = nil
 
@@ -296,7 +296,7 @@ AddEventHandler('esx_burgerjob:buyItem', function(itemName, price, itemLabel)
       end)
     
     if societyAccount ~= nil and societyAccount.money >= price then
-        if qtty < limit then
+        if qtty < weight then
             societyAccount.removeMoney(price)
             xPlayer.addInventoryItem(itemName, 1)
             TriggerClientEvent('esx:showNotification', _source, _U('bought') .. itemLabel)
