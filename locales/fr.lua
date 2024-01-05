@@ -29,6 +29,7 @@ Locales['fr'] = {
     ['shop_menu']                = 'Appuyez sur ~INPUT_CONTEXT~ pour accéder à la boutique.',
     ['bought']                   = 'Vous avez acheté ~b~1x ',
     ['not_enough_money']         = 'Vous n\'avez ~r~pas assez~s~ d\'argent.',
+    ['not_enough_fric']         = 'L\'entreprise n\'a pas assez d\'argent',
     ['max_item']                 = 'Vous en portez déjà assez sur vous.',
 
     -- Vehicles  
@@ -59,16 +60,43 @@ Locales['fr'] = {
     ['billing_amount']           = 'Montant de la facture',
     ['amount_invalid']           = 'Montant invalide',
 
-    -- Crafting Menu  
-    ['crafting']                 = 'Fabrication Hamburger',
+    -- Ingredientg Menu  
+    ['open_steak']          = 'Appuyez sur ~INPUT_CONTEXT~ pour cuire un steak',
+    ['ingredient']                 = 'Préparation',
+    ['cuttomate']                  = 'Couper des tomates',
+    ['lavesalade']                   = 'Laver la salade',
+    ['cuiresteak']                 = 'Cuire le steak',
+    ['friteuse']                 = 'Mettre dans la friteuse',
+    ['fromage']                = 'Fromage',
+    ['salads']                 = 'Salade sale',
+    ['tomater']                = 'Tomate',
+    ['steakc']                = 'Steak Cru',
+    ['patate']                = 'Patate',
+    ['patatefrie']                = 'Patate Frit',
+    ['assembling_ingredient']      = 'Préparation en cours',
+    ['term_miss']               = 'Echec de la préparation...',
+    ['not_enough']               = 'Pas assez de ~r~ ',
+    [' term']                    = '~g~ sont prêt',
+
+        -- Crafting Menu  
+    ['crafting']                 = 'Cuisiner',
     ['burger']                  = 'Burger',
     ['bread']                   = 'Pain',
-    ['steak']                 = 'Steak',
-    ['cheese']                = 'Fromage',
-    ['assembling_cocktail']      = 'Mélange des différents ingrédients en cours !',
-    ['craft_miss']               = 'Malheureux échec du mélange...',
+    ['steakcui']                 = 'Steak cuit',
+    ['fromage']                = 'Fromage',
+    ['saladp']                 = 'Feuilles de salades',
+    ['tomatec']                = 'Rondelle de tomates',
+    ['frites']                = 'Barquette de frites',
+    ['assembling_burger']      = 'Cuisine en cours !',
+    ['craft_miss']               = 'Echec de la conception...',
     ['not_enough']               = 'Pas assez de ~r~ ',
-    ['craft']                    = '~g~ est prêt',
+    [' craft']                    = '~g~ est prêt',
+    ['icetea']                   = 'Ice Tea',
+    ['drpepper']                 = 'Dr. Pepper',
+    ['energy']                   = 'Energy Drink',
+    ['limonade']                 = 'Limonade',
+    ['soda']                     = 'Soda',
+    ['jusfruit']                 = 'Jus de fruits',
 
     -- Misc  
     ['map_blip']                 = 'BurgerShot',
@@ -77,5 +105,31 @@ Locales['fr'] = {
     -- Phone  
     ['burgershot_phone']            = 'BurgerShot',
     ['burgershot_customer']         = 'Citoyen',
+
+    -- Items utilisable
+    ['used_burger']            = 'Vous mangez un Hamburger',
+    ['used_frites']         = 'Vous mangez une barquette de frites.',
+    ['used_soda']            = 'Vous buvez un soda',
+    ['used_icetea']         = 'Vous buvez un Ice Tea',
+    ['used_jusfruit']            = 'Vous buvez un Jus de fruit',
+    ['used_limonade']         = 'Vous buvez une limonade',
+    ['used_drpepper']            = 'Vous buvez un DrPepper',
+    ['used_energy']         = 'Vous buvez une Boisson Energy',
+
+    -- Run
+  ['burgershot_client'] = 'client burgershot',
+  ['sachet_in_progress'] = 'Mise en sachet du ketchup en cours',
+  ['ketchup_taken'] = 'vous être en train de ramasser des caisses de ketchup',
+  ['press_traitement'] = 'appuyez sur ~INPUT_CONTEXT~ pour mettre en sachet votre ketchup',
+  ['press_collect'] = 'appuyez sur ~INPUT_CONTEXT~ pour ramasser des caisses de ketchup',
+  ['press_collectsachet'] = 'appuyez sur ~INPUT_CONTEXT~ pour mettre les caisses de ketchup en sachet',
+  ['press_sell'] = 'appuyez sur ~INPUT_CONTEXT~ pour vendre vos produits',
+  ['no_ketchup_sale'] = 'vous n\'avez plus ou pas assez de sachet de ketchup',
+  ['not_enough_caisseketchup'] = 'vous n\'avez plus de caisse de ketchup',
+  ['no_product_sale'] = 'vous n\'avez plus de produits',
+  ['not_enough_place'] = 'Vous n\'avez plus assez de place',
+  ['sale_in_prog'] = 'revente en cours...',
+  ['comp_earned'] = 'votre société a gagné ~g~$',
+  ['comp_earned_private'] = 'vous avez gagné ~g~$',
     
 }
