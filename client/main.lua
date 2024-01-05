@@ -1,5 +1,5 @@
 print("^0======================================================================^7")
-print("^3Copyright 2019-2023 esx_burgerjob ^5V2.0.1 ^3by ^1FproGeek^0")
+print("^3Copyright 2019-2024 esx_burgerjob ^5V2.0.1 ^3by ^1FproGeek^0")
 print("^5https://github.com/FproGeek/esx_burgerjob^0")
 print("^0======================================================================^7")
 
