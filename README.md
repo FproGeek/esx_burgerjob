@@ -1,8 +1,28 @@
-# esx_burgerjob
+# esx_burgerjob 2.0.1
 Ce script permet d'avoir le job BurgerShot sur son serveur gta 5 RP (fivem).
+* Correction erreur getSharedObject
+* Suppresion de resource.lua et création fxmanifest.lua
 
-Merci de télecharger et d'installer ce mapping pour utiliser burgershot.
-https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem
+### ZONE DE BASE:
+-Système de run (caisse ketchup ---- sachet ketchup ---- vente sachet
+
+-Vestiaire
+
+-Coffre
+
+-Menu patron
+
+-Frigo 
+
+-Garage véhicule
+
+### MENU F6:
+
+-Menu Facture.
+
+-Menu préparation (couper tomate, cuire steak, mettre patate dans la friteuse, laver la salade).
+
+-Menu Cuisiner (Cuisiner un Hamburger, une barquette de frites).
 
 # Script Requiert
 Mapping burgershot => https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem  (merci a Smallo)
@@ -19,22 +39,19 @@ esx_optionalsneeds => https://github.com/ESX-Org/esx_optionalneeds
 
 # Installation
 1) Ajouter ce mapping sur votre serveur : https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem, oubliez pas de marquer le dossier dans server.cfg.
-2) Ouvrez l'archive "esx_burgershot 1.1.0"
-3) Placer le dossier "esx_burgershot" dans /[esx]
-4) Importer esx_burgersho.sql dans votre base de donnée
-5) Ajouter cette ligne dans votre server.cfg : start esx_burgerjob
+2) Ouvrez l'archive "esx_burgerjob"
+3) Placer le dossier "esx_burgerjob" dans /[esx]
+4) Importer esx_burgerjob.sql dans votre base de donnée
+5) Ajouter cette ligne dans votre server.cfg : ensure esx_burgerjob
 
-# Manger l'hamburger
-Pour rendre possible le pouvoir de manger son hamburger, vous devez vous rendre dans esx_basicneeds puis dans /server/main.lua et ajouter : 
+# Legal
+License
+esx_burgerjob - burger job for ESX
 
-"ESX.RegisterUsableItem('burger', function(source)
-	local xPlayer = ESX.GetPlayerFromId(source)
+Copyright (C) 2024 FproGeek
 
-	xPlayer.removeInventoryItem('burger', 1)
+This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
 
-	TriggerClientEvent('esx_status:add', source, 'hunger', 200000)
-	TriggerClientEvent('esx_basicneeds:onEat', source)
-	TriggerClientEvent('esx:showNotification', source, _U('used_burger'))
-end)"
+This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
 
-merci
+You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
